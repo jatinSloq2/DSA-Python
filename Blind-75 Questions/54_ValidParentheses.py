@@ -1,18 +1,111 @@
 """
-Problem: 54_ValidParentheses
-Category:
-Difficulty:
-Link:
-
-Notes:
-- Approach:
-- Time Complexity:
-- Space Complexity:
+Problem: 20_ValidParentheses
+Category: Stack
+Difficulty: Easy
 """
 
 class Solution:
-    def solve(self, *args):
-        pass
+
+    # --------------------------------------------------
+    # 1. Brute Force (Worst)
+    # --------------------------------------------------
+    def brute_force(self, s):
+        """
+        Remove valid pairs repeatedly
+
+        Time Complexity: O(n^2)
+        Space Complexity: O(n)
+        """
+        prev = None
+
+        while prev != s:
+            prev = s
+            s = s.replace("()", "").replace("[]", "").replace("{}", "")
+
+        return s == ""
+
+
+    # --------------------------------------------------
+    # 2. Stack (Basic)
+    # --------------------------------------------------
+    def stack_basic(self, s):
+        """
+        Manual matching
+
+        Time Complexity: O(n)
+        Space Complexity: O(n)
+        """
+        stack = []
+
+        for ch in s:
+            if ch in "([{":
+                stack.append(ch)
+            else:
+                if not stack:
+                    return False
+
+                top = stack.pop()
+
+                if (top == '(' and ch != ')') or \
+                   (top == '[' and ch != ']') or \
+                   (top == '{' and ch != '}'):
+                    return False
+
+        return not stack
+
+
+    # --------------------------------------------------
+    # 3. Stack + HashMap (Best / Standard)
+    # --------------------------------------------------
+    def stack_hashmap(self, s):
+        """
+        Clean matching using map
+
+        Time Complexity: O(n)
+        Space Complexity: O(n)
+        """
+        stack = []
+        mapping = {')': '(', ']': '[', '}': '{'}
+
+        for ch in s:
+            if ch in mapping.values():
+                stack.append(ch)
+            else:
+                if not stack or stack[-1] != mapping[ch]:
+                    return False
+                stack.pop()
+
+        return not stack
+
+
+    # --------------------------------------------------
+    # 4. Push Expected Closing (Advanced Clean)
+    # --------------------------------------------------
+    def push_expected(self, s):
+        """
+        Push expected closing brackets
+
+        Time Complexity: O(n)
+        Space Complexity: O(n)
+        """
+        stack = []
+        mapping = {'(': ')', '[': ']', '{': '}'}
+
+        for ch in s:
+            if ch in mapping:
+                stack.append(mapping[ch])
+            else:
+                if not stack or stack.pop() != ch:
+                    return False
+
+        return not stack
+
+
+    # --------------------------------------------------
+    # Final (what to use in interview)
+    # --------------------------------------------------
+    def solve(self, s):
+        return self.stack_hashmap(s)
 
 
 # --------------------------
@@ -20,4 +113,9 @@ class Solution:
 # --------------------------
 if __name__ == "__main__":
     sol = Solution()
-    print(sol.solve())
+
+    print(sol.solve("()"))        # True
+    print(sol.solve("()[]{}"))    # True
+    print(sol.solve("(]"))        # False
+    print(sol.solve("([)]"))      # False
+    print(sol.solve("{[]}"))      # True
