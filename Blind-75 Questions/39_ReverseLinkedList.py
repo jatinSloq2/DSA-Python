@@ -4,11 +4,14 @@ Category:
 Difficulty:
 Link:
 
-Notes:
-- Approach:
-- Time Complexity:
-- Space Complexity:
-"""
+# --------------------------
+# Definition
+# --------------------------
+class ListNode(object):
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
 
 class Solution:
     def solve(self, *args):
